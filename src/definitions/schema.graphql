@@ -1,5 +1,7 @@
 
 # schema.graphql
-type Query {
-  helloWorld: String!
+
+type Assembly {
+  name: String!
+  version: String
 }
