@@ -1,0 +1,31 @@
+type Assembly {
+   creationDate: LocalDateTime!
+   creator: String
+   isDebug: Boolean
+   isILOnly: Boolean!
+   isNative: Boolean!
+   name: String!
+   shortName: String!
+   targetFramework: String
+   targetProcessor: String!
+   version: String
+   directReferencedAssemblies: [Assembly!]! @relation(name: "REFERENCE", direction:"OUT")
+
+   directReferenceCount: Int @cypher(statement: "MATCH (this)-[r:REFERENCE]->(:Assembly) RETURN COUNT(r)") 
+   
+   allReferencedAssemblies(depth: Int = 200): [Assembly!]!
+      @cypher(statement: """MATCH p=(this)-[:REFERENCE*1..]->(a:Assembly) 
+                            WHERE LENGTH(p) <= $depth
+                            RETURN a""")
+
+   maxDepth:  Int 
+      @cypher(statement: """MATCH p=(this)-[:REFERENCE*]->(child:Assembly)
+                            WHERE NOT (child)-[:REFERENCE]->()
+                            RETURN LENGTH(p) AS maxLth
+                            ORDER BY maxLth DESC
+                            Limit 1""")
+}
+
+extend type Query {
+  Assembly: [Assembly]
+}
