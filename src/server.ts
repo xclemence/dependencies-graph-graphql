@@ -7,11 +7,12 @@ import { driver } from 'neo4j-driver';
 
 import schema from './schema';
 import depthLimit from 'graphql-depth-limit';
+import "./env"
 
 const port = 4001;
 
 const driverInstance = driver(
-  'bolt://localhost'
+  process.env.NEO4J_HOST!
 );
 
 const server = new ApolloServer({

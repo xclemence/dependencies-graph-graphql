@@ -24,3 +24,7 @@ jobs:
       
     - name: Build
       run: yarn build
+    
+    - name: Build docker image
+      run:  docker build . --tag dependencies-graph-graphql:test
+
