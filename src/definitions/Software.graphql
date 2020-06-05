@@ -1,12 +1,12 @@
 type Software {
-   creationDate: LocalDateTime!
-   creator: String!
-   isDebug: Boolean!
+  creationDate: LocalDateTime!
+   creator: String
+   isDebug: Boolean
    isILOnly: Boolean!
    isNative: Boolean!
    name: String!
    shortName: String!
-   targetFramework: String!
+   targetFramework: String
    targetProcessor: String!
    version: String
 }

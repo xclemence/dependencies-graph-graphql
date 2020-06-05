@@ -1,3 +1,9 @@
+
+type AssemblyReference {
+   source: String!
+   target: String!   
+}
+
 type Assembly {
    creationDate: LocalDateTime!
    creator: String
@@ -9,20 +15,27 @@ type Assembly {
    targetFramework: String
    targetProcessor: String!
    version: String
+   
    directReferencedAssemblies: [Assembly!]! @relation(name: "REFERENCE", direction:"OUT")
 
    directReferenceCount: Int @cypher(statement: "MATCH (this)-[r:REFERENCE]->(:Assembly) RETURN COUNT(r)") 
    
    allReferencedAssemblies(depth: Int = 200): [Assembly!]!
-      @cypher(statement: """MATCH p=(this)-[:REFERENCE*1..]->(a:Assembly) 
-                            WHERE LENGTH(p) <= $depth
-                            RETURN a""")
+      @cypher(statement: """MATCH p = (this)-[:REFERENCE*1..]->(x:Assembly)
+                          WHERE LENGTH(p) <= $depth
+                          RETURN DISTINCT (x)""")
 
+   allReferencedAssemblIesLinks(depth: Int = 200): [AssemblyReference!]!
+      @cypher(statement: """MATCH p = (this)-[:REFERENCE*]->(x:Assembly)
+                            WHERE LENGTH(p) <= $depth
+                            WITH *, relationships(p) AS r
+                            return { source :startNode(last(r)).name, target: endNode(last(r)).name}""")
+   
    maxDepth:  Int 
       @cypher(statement: """MATCH p=(this)-[:REFERENCE*]->(child:Assembly)
                             WHERE NOT (child)-[:REFERENCE]->()
-                            RETURN LENGTH(p) AS maxLth
-                            ORDER BY maxLth DESC
+                            RETURN LENGTH(p) AS maxLenght
+                            ORDER BY maxLenght DESC
                             Limit 1""")
 }
 
