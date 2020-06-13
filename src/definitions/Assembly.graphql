@@ -25,7 +25,7 @@ type Assembly {
                           WHERE LENGTH(p) <= $depth
                           RETURN DISTINCT (x)""")
 
-   allReferencedAssemblIesLinks(depth: Int = 200): [AssemblyReference!]!
+   allReferencedAssembliesLinks(depth: Int = 200): [AssemblyReference!]!
       @cypher(statement: """MATCH p = (this)-[:REFERENCE*]->(x:Assembly)
                             WHERE LENGTH(p) <= $depth
                             WITH *, relationships(p) AS r
