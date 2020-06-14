@@ -42,3 +42,12 @@ type Assembly {
 extend type Query {
   Assembly: [Assembly]
 }
+
+type Mutation {
+  removeAssembly(assemblyName: String!): Assembly @cypher(statement: """
+      MATCH (a :Assembly {name:$assemblyName})
+      WITH a, a {.*} as snapshot
+      DETACH DELETE a
+      RETURN snapshot
+    """)
+}
