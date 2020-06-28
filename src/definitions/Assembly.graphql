@@ -36,11 +36,12 @@ type Assembly {
                             WHERE NOT (child)-[:REFERENCE]->()
                             RETURN LENGTH(p) AS maxLenght
                             ORDER BY maxLenght DESC
-                            Limit 1""")
+                            Limit 1"""),
 }
 
 extend type Query {
   Assembly: [Assembly]
+  AssemblyCount(filter: _AssemblyFilter): Int
 }
 
 type Mutation {
