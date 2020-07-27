@@ -3,7 +3,7 @@ import { Neo4jContext, RequestArguments } from 'neo4j-graphql-js';
 
 import { executeCountQuery } from '../services/neo4j/count-query';
 
-const resolvers = {
+const mainResolver = {
   Query: {
     isAlive(object: any, params: any, ctx: any, resolveInfo: GraphQLResolveInfo) {
       return true;
@@ -13,11 +13,11 @@ const resolvers = {
     },
   },
   Mutation: {
-    hello: (parent: any, parameters: { name: String }, context: any, info: GraphQLResolveInfo): String => {
+    hello: (parent: any, parameters: { name: string }, context: any, info: GraphQLResolveInfo): string => {
       return `Hello ${parameters.name}!`;
     }
   }
 };
 
-export default resolvers;
+export default mainResolver;
 

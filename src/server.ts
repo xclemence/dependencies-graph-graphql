@@ -1,19 +1,22 @@
+import './env';
+
 import { ApolloServer } from 'apollo-server-express';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
+import depthLimit from 'graphql-depth-limit';
 import { createServer } from 'http';
 import { driver } from 'neo4j-driver';
 
 import schema from './schema';
-import depthLimit from 'graphql-depth-limit';
-import "./env"
 
 const port = 4001;
 
-const driverInstance = driver(
-  process.env.NEO4J_HOST!
-);
+if(!process.env.NEO4J_HOST) {
+  throw new Error("Unexpected error: Missing host name");
+}
+
+const driverInstance = driver(process.env.NEO4J_HOST);
 
 const server = new ApolloServer({
   schema,
