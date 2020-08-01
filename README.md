@@ -13,7 +13,7 @@ Dependencies Graph Graphql provides Graphql entry point retrieve assemblies and 
 
 # How to use
 
-## Build sources (Angular CLI)
+## Build sources
 - `yarn dev` for development. Navigate to `http://localhost:4001/graphql`. The app will automatically reload if you change any of the source files.
 - `ng build` to build the project.
 
