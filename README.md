@@ -1,10 +1,10 @@
-# Dependencies Graph Graphql
+# Dependencies Graph GraphQL
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](/LICENSE)
 [![Build][github-actions-badge]][github-actions]
 [![Quality Gate Status][sonar-project-badge]][sonar-project]
 
-Dependencies Graph Graphql provides Graphql entry point retrieve assemblies and these dependencies. behind service, a [Neo4j][neo4j-url] database ensures graph storage.
+Dependencies Graph GraphQL provides GraphQL entry point retrieve assemblies and these dependencies. behind service, a [Neo4j][neo4j-url] database ensures graph storage.
 
 ## Features
 
@@ -18,6 +18,10 @@ Dependencies Graph Graphql provides Graphql entry point retrieve assemblies and 
 - `ng build` to build the project.
 
 > *This project is configured to work with the [Remote Development][remote-development-plugin-url] plugin.*
+
+With your server still running, visit `http://localhost:4001` in your browser to open GraphQL Playground (provide by **Apollo Server**)
+
+<img src="doc/images/graphql-playground.png"/>
 
 ## Docker image
 
@@ -35,7 +39,7 @@ Port exposed by Container:
 
 |        Name        |       Description                |
 | -------------------|--------------------------------- |
-| 4001               | HTTP port for graphql services   |
+| 4001               | HTTP port for GraphQL services   |
 
 You can start a Dependencies Graph Viewer container like this:
 
