@@ -4,7 +4,6 @@ declare module 'neo4j-graphql-js' {
     import { ExecutionResult, GraphQLFieldResolver, GraphQLResolveInfo, GraphQLSchema } from 'graphql';
     import { Driver } from 'neo4j-driver';
 
-
     export function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): GraphQLSchema;
 
     export function neo4jgraphql(

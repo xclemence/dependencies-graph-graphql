@@ -7,7 +7,12 @@ import path from 'path';
 const typesFiles = loadFilesSync(path.join(__dirname, 'definitions/*.graphql'))
 const typeDefs = mergeTypeDefs(typesFiles)
 
-const resolversFiles = loadFilesSync(path.join(__dirname, 'resolvers/*.ts'));
+const resolverPatterns = [
+    path.join(__dirname, 'resolvers/*.ts'),
+    path.join(__dirname, 'resolvers/*.js')
+];
+
+const resolversFiles = loadFilesSync(resolverPatterns);
 const resolvers = mergeResolvers(resolversFiles);
 
 const schema: GraphQLSchema = makeAugmentedSchema({
