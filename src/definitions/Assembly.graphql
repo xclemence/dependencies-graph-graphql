@@ -16,7 +16,7 @@ type Assembly {
    targetProcessor: String!
    version: String
    
-   directReferencedAssemblies: [Assembly!]! @relation(name: "REFERENCE", direction:"OUT")
+   directReferencedAssemblies: [Assembly!]! @relation(name: "REFERENCE", direction: OUT)
 
    directReferenceCount: Int @cypher(statement: "MATCH (this)-[r:REFERENCE]->(:Assembly) RETURN COUNT(r)") 
    
