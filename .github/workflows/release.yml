@@ -106,8 +106,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v1
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_LOGIN }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
     - name: Build and push
       uses: docker/build-push-action@v2
@@ -125,8 +125,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    
-    - uses: olegtarasov/get-tag@v2
+    - uses: olegtarasov/get-tag@v2.1
       id: tagName
 
     - name: Read Release Notes
