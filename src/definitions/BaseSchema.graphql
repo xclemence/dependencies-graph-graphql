@@ -1,7 +1,7 @@
 type Query {
-  isAlive: Boolean! @neo4j_ignore
+  isAlive: Boolean!
 }
 
-extend type Mutation {
+type Mutation {
   hello(name: String!): String!
 }
