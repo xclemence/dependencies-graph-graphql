@@ -9,38 +9,66 @@ import { createServer } from 'http';
 import { driver } from 'neo4j-driver';
 import { OGM } from '@neo4j/graphql-ogm';
 
-import schema, { typesFiles } from './schema';
+import { typesFiles, resolvers } from './schema';
 import { Context } from './types/context';
+import { getPublicKey } from './keycloak';
+import jwt from 'express-jwt';
+import { Neo4jGraphQL } from '@neo4j/graphql';
 
 const port = 4001;
 
-if(!process.env.NEO4J_HOST) {
+if (!process.env.NEO4J_HOST) {
   throw new Error('Unexpected error: Missing host name');
 }
 
-const driverInstance = driver(process.env.NEO4J_HOST);
+const host = process.env.NEO4J_HOST;
 
-const ogm = new OGM({
-  typeDefs: typesFiles,
-  driver: driverInstance,
-});
+(async() => {
+  const publicKey = await getPublicKey('http://localhost:9080/auth/realms/dependencies');
+  const driverInstance = driver(host);
 
-const server = new ApolloServer({
-  schema,
-  validationRules: [depthLimit(10)],
-  context: () => ({ ogm, driver: driverInstance } as Context),
-});
+  const ogm = new OGM({
+    typeDefs: typesFiles,
+    driver: driverInstance,
+  });
 
-const app = express();
+  console.log(publicKey);
 
-app.use(cors());
-app.use(compression());
+  const neo4jGraphQL = new Neo4jGraphQL({
+    typeDefs: typesFiles,
+    resolvers,
+    config: {
+      jwt: {
+          secret: publicKey,
+          // secret: 'et merde',
+          rolesPath: "resource_access.graph-graphql.roles"
+      }
+    }
+  });
 
-server.applyMiddleware({ app, path: '/graphql' });
+  const server = new ApolloServer({
+    schema: neo4jGraphQL.schema,
+    validationRules: [depthLimit(10)],
+    context: ({req}) => {
+      console.log(req);
+      return ({ req, ogm, driver: driverInstance } as Context);
+    }
+  });
 
-const httpServer = createServer(app);
+  const app = express();
 
-httpServer.listen(
-  { port },
-  (): void => console.log(`\nGraphQL is now running on http://localhost:${port}/graphql`)
-);
+  // app.use(jwt({ secret: publicKey, algorithms: ['RS256'] }));
+  app.use(cors());
+  app.use(compression());
+
+  server.applyMiddleware({ app, path: '/graphql' });
+
+  const httpServer = createServer(app);
+
+  httpServer.listen(
+    { port },
+    (): void => console.log(`\nGraphQL is now running on http://localhost:${port}/graphql`)
+  );
+
+})();
+

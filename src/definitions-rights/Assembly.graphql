@@ -1,0 +1,6 @@
+type Mutation {
+  removeAssembly(assemblyName: String!): Assembly @auth(rules: [{ operations: [READ], roles: ["write"] }])
+}
+
+type Assembly @auth(rules: [{ operations: [READ], roles: ["read"] }])
+
