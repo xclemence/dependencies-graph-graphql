@@ -1,11 +1,10 @@
-
-type AssemblyReference {
+type AssemblyReference @exclude {
    source: String!
    target: String!   
 }
 
-type Assembly {
-   creationDate: LocalDateTime!
+type Assembly @exclude(operations: [CREATE, UPDATE, DELETE]) {
+   creationDate: DateTime! 
    creator: String
    isDebug: Boolean
    isILOnly: Boolean!
@@ -16,7 +15,7 @@ type Assembly {
    targetProcessor: String!
    version: String
    
-   directReferencedAssemblies: [Assembly!]! @relation(name: "REFERENCE", direction: OUT)
+   directReferencedAssemblies: [Assembly!]! @relationship(type: "REFERENCE", direction: OUT)
 
    directReferenceCount: Int @cypher(statement: "MATCH (this)-[r:REFERENCE]->(:Assembly) RETURN COUNT(r)") 
    
@@ -37,11 +36,6 @@ type Assembly {
                             RETURN LENGTH(p) AS maxLenght
                             ORDER BY maxLenght DESC
                             Limit 1"""),
-}
-
-extend type Query {
-  Assembly: [Assembly]
-  AssemblyCount(filter: _AssemblyFilter): Int
 }
 
 type Mutation {
