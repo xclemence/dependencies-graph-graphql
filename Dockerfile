@@ -1,7 +1,9 @@
-FROM node:14-slim as runtime-container
+FROM node:14-slim
 WORKDIR /app
 
-COPY ["package.json", "yarn.lock", "dist", "./"]
+COPY ./dist ./
+
+COPY ["package.json", "yarn.lock", "./"]
 
 RUN yarn install --prod
 
