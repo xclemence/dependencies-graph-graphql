@@ -31,9 +31,13 @@ This image is base on **Linux**.
 
 You can configure container by setting environment variables.
 
-| Environment variable     |          Comment           |   default value     |
+| Environment variable     |          Comment           |   sample value     |
 |------------------------- | :--------------------------|-------------------- |
 | NEO4J_HOST               | Noe4j database uri         | bolt://localhost    |
+| GRAPH_SECURITY_ENABLED   | Enable jwt validation      | bolt://localhost    |
+| GRAPH_TOKEN_ROLES_PATH   | Roles path inside jwt        | resource_access.graph-graphql.roles    |
+| GRAPH_TOKEN_AUTHORITY    | Authority for token validation | http://localhost:9080/auth/realms/dependencies    |
+| DEBUG                    | Activate @neo4j/graphql traces | @neo4j/graphql:*    |
 
 Port exposed by Container:
 
