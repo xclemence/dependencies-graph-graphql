@@ -17,42 +17,50 @@ if (!process.env.NEO4J_HOST) {
 
 const host = process.env.NEO4J_HOST;
 const rolesPath = process.env.GRAPH_TOKEN_ROLES_PATH;
-const securityEnabled = process.env.GRAPH_SECURITY_ENABLED;
+const securityEnabled = process.env.GRAPH_SECURITY_ENABLED === 'true';
 const tokenAuthority = process.env.GRAPH_TOKEN_AUTHORITY;
 
-(async() => {
-  const app = express();
+(async () => {
+  try {
 
-  let server: ApolloServer;
+    const app = express();
 
-  if(securityEnabled) {
+    let server: ApolloServer;
 
-    if (!tokenAuthority) {
-      throw new Error('Unexpected error: Missing token Authority');
+    if (securityEnabled) {
+
+      console.log(`secu : ${securityEnabled}`)
+
+      if (!tokenAuthority) {
+        throw new Error('Unexpected error: Missing token Authority');
+      }
+
+      if (!rolesPath) {
+        throw new Error('Unexpected error: Missing token roles path');
+      }
+
+      const publicKey = await getPublicKey(tokenAuthority);
+      server = createApolloServerWithToken(host, { publicKey, rolesPath });
+    }
+    else {
+      server = createApolloServerNoToken(host);
     }
 
-    if (!rolesPath) {
-      throw new Error('Unexpected error: Missing token roles path');
-    }
+    app.use(cors());
+    app.use(compression());
 
-    const publicKey = await getPublicKey(tokenAuthority);
-    server = createApolloServerWithToken(host, { publicKey, rolesPath});
+    server.applyMiddleware({ app, path: '/graphql' });
+
+    const httpServer = createServer(app);
+
+    httpServer.listen(
+      { port },
+      (): void => console.log(`\nGraphQL is now running on http://localhost:${port}/graphql`)
+    );
+
+  } catch(error: any) {
+    console.error(error);
   }
-  else {
-    server = createApolloServerNoToken(host);
-  }
-
-  app.use(cors());
-  app.use(compression());
-
-  server.applyMiddleware({ app, path: '/graphql' });
-
-  const httpServer = createServer(app);
-
-  httpServer.listen(
-    { port },
-    (): void => console.log(`\nGraphQL is now running on http://localhost:${port}/graphql`)
-  );
 
 })();
 
