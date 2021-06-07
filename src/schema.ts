@@ -2,18 +2,27 @@ import { loadFilesSync } from '@graphql-tools/load-files';
 import { mergeResolvers } from '@graphql-tools/merge';
 import path from 'path';
 
-let typesFilesPatterns = [
+export function getTypesFiles(enabledSecurity: boolean): any[] {
+  let typesFilesPatterns = [
     path.join(__dirname, 'definitions/*.graphql'),
-    path.join(__dirname, 'definitions-rights/*.graphql')
-];
+  ];
 
-export const typesFiles = loadFilesSync(typesFilesPatterns);
+  if (enabledSecurity) {
+    typesFilesPatterns = [
+      ...typesFilesPatterns,
+      path.join(__dirname, 'definitions-rights/*.graphql')
+    ];
+  }
 
-const resolverPatterns = [
+  return loadFilesSync(typesFilesPatterns);
+}
+
+export function getResolvers(): any {
+  const resolverPatterns = [
     path.join(__dirname, 'resolvers/*.ts'),
     path.join(__dirname, 'resolvers/*.js')
-];
+  ];
 
-const resolversFiles = loadFilesSync(resolverPatterns);
-export const resolvers = mergeResolvers(resolversFiles);
-
+  const resolversFiles = loadFilesSync(resolverPatterns);
+  return mergeResolvers(resolversFiles);
+}

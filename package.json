@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node dotenv/config 'dist/server.js'",
-    "build": "tsc -p . && ncp src/definitions dist/definitions",
+    "build": "tsc -p . && ncp src/definitions dist/definitions && ncp src/definitions-rights dist/definitions-rights",
     "dev": "nodemon --exec \"yarn ts-node\" src/server.ts -e ts,graphql ",
     "ts-node": "ts-node "
   },
@@ -46,7 +46,6 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "express-jwt": "^6.0.0",
     "graphql": "^15.5.0",
     "graphql-depth-limit": "^1.1.0",
     "lodash": "^4.17.21",

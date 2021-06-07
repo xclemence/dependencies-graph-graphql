@@ -5,7 +5,7 @@ const mainResolver = {
     }
   },
   Mutation: {
-    hello: (parent: any, parameters: { name: string }): string => {
+    hello: (_: any, parameters: { name: string }): string => {
       return `Hello ${parameters.name}!`;
     }
   }
