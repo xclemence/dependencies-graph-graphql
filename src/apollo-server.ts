@@ -52,11 +52,9 @@ function createApolloServerBase(
     config
   });
 
-  const server = new ApolloServer({
+  return new ApolloServer({
     schema: neo4jGraphQL.schema,
     validationRules: [depthLimit(10)],
     context: ({ req }) => ({ req, ogm, driver: driverInstance } as Context)
   });
-
-  return server;
 }
