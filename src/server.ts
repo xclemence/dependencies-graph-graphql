@@ -29,8 +29,6 @@ const tokenAuthority = process.env.GRAPH_TOKEN_AUTHORITY;
 
     if (securityEnabled) {
 
-      console.log(`secu : ${securityEnabled}`)
-
       if (!tokenAuthority) {
         throw new Error('Unexpected error: Missing token Authority');
       }
