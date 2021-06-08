@@ -1,46 +1,64 @@
 import './env';
 
-import { ApolloServer } from 'apollo-server-express';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
-import depthLimit from 'graphql-depth-limit';
 import { createServer } from 'http';
-import { driver } from 'neo4j-driver';
-import { OGM } from '@neo4j/graphql-ogm';
 
-import schema, { typesFiles } from './schema';
-import { Context } from './types/context';
+import { getPublicKey } from './keycloak';
+import { createApolloServerNoToken, createApolloServerWithToken } from './apollo-server';
+import { ApolloServer } from 'apollo-server-express';
 
 const port = 4001;
 
-if(!process.env.NEO4J_HOST) {
+if (!process.env.NEO4J_HOST) {
   throw new Error('Unexpected error: Missing host name');
 }
 
-const driverInstance = driver(process.env.NEO4J_HOST);
+const host = process.env.NEO4J_HOST;
+const rolesPath = process.env.GRAPH_TOKEN_ROLES_PATH;
+const securityEnabled = process.env.GRAPH_SECURITY_ENABLED === 'true';
+const tokenAuthority = process.env.GRAPH_TOKEN_AUTHORITY;
 
-const ogm = new OGM({
-  typeDefs: typesFiles,
-  driver: driverInstance,
-});
+(async () => {
+  try {
 
-const server = new ApolloServer({
-  schema,
-  validationRules: [depthLimit(10)],
-  context: () => ({ ogm, driver: driverInstance } as Context),
-});
+    const app = express();
 
-const app = express();
+    let server: ApolloServer;
 
-app.use(cors());
-app.use(compression());
+    if (securityEnabled) {
 
-server.applyMiddleware({ app, path: '/graphql' });
+      if (!tokenAuthority) {
+        throw new Error('Unexpected error: Missing token Authority');
+      }
 
-const httpServer = createServer(app);
+      if (!rolesPath) {
+        throw new Error('Unexpected error: Missing token roles path');
+      }
 
-httpServer.listen(
-  { port },
-  (): void => console.log(`\nGraphQL is now running on http://localhost:${port}/graphql`)
-);
+      const publicKey = await getPublicKey(tokenAuthority);
+      server = createApolloServerWithToken(host, { publicKey, rolesPath });
+    }
+    else {
+      server = createApolloServerNoToken(host);
+    }
+
+    app.use(cors());
+    app.use(compression());
+
+    server.applyMiddleware({ app, path: '/graphql' });
+
+    const httpServer = createServer(app);
+
+    httpServer.listen(
+      { port },
+      (): void => console.log(`\nGraphQL is now running on http://localhost:${port}/graphql`)
+    );
+
+  } catch(error: any) {
+    console.error(error);
+  }
+
+})();
+
