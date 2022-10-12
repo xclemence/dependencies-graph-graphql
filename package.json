@@ -39,7 +39,7 @@
     "@graphql-tools/load-files": "^6.3.2",
     "@neo4j/graphql": "^1.0.2",
     "@neo4j/graphql-ogm": "^1.0.2",
-    "apollo-server": "^2.25.0",
+    "apollo-server": "^2.25.4",
     "apollo-server-express": "^2.25.0",
     "axios": "^0.21.1",
     "compression": "^1.7.4",
